@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreenFuture Energy — Learn Renewable Energy</title>
+  <meta name="description" content="A modern, mobile‑first website explaining renewable energy sources, with interactive charts and clear pros & cons." />
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%2309B27E'/%3E%3Cpath d='M50 14l8 16 18 3-13 12 3 18-16-8-16 8 3-18-13-12 18-3z' fill='white'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      /* Core palette */
+      --bg: #0a0f0d;           /* deep green/black */
+      --surface: #0f1613;      /* card background */
+      --text: #edf7f3;         /* primary text */
+      --text-dim: #a5b8b0;     /* secondary text */
+      --brand: #14b8a6;        /* teal/green */
+      --brand-2: #38bdf8;      /* sky blue */
+      --accent: #84cc16;       /* lime */
+      --warn: #f59e0b;         /* amber */
+      --danger: #ef4444;       /* red */
+      --shadow: 0 12px 40px rgba(0,0,0,.28);
+      --radius: 18px;
+      --maxw: 1200px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6fbf8;
+        --surface: #ffffff;
+        --text: #0f1720;
+        --text-dim: #516163;
+        --brand: #0e9f6e;
+        --brand-2: #0ea5e9;
+        --accent: #65a30d;
+        --shadow: 0 12px 40px rgba(2,6,23,.08);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 110% -10%, color-mix(in oklab, var(--brand-2) 18%, transparent), transparent),
+        radial-gradient(1000px 700px at -10% 110%, color-mix(in oklab, var(--brand) 18%, transparent), transparent),
+        var(--bg);
+      scroll-behavior: smooth;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(100% - 2rem, var(--maxw)); margin-inline: auto; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: .9rem 1.2rem; border-radius: 999px;
+      border: 1px solid color-mix(in oklab, var(--brand) 30%, transparent);
+      background: linear-gradient(180deg, color-mix(in oklab, var(--brand) 15%, transparent), transparent);
+      color: var(--text); font-weight: 700; letter-spacing:.2px; box-shadow: var(--shadow);
+      transition: transform .15s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: var(--brand); }
+    .btn.alt { background: transparent; border-color: color-mix(in oklab, var(--text) 20%, transparent); box-shadow: none; }
+
+    /* Header */
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px); background: color-mix(in oklab, var(--bg) 70%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--text) 10%, transparent); }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: .85rem 0; }
+    .brand { display:flex; align-items:center; gap:.6rem; font-weight:900; letter-spacing:.2px; }
+    .brand .logo { width: 36px; height: 36px; border-radius: 10px; display:grid; place-items:center; background: linear-gradient(135deg, var(--brand), var(--accent)); color:white; font-weight:900; box-shadow: var(--shadow); }
+    nav ul { display: flex; gap: 1rem; list-style: none; padding: 0; margin: 0; }
+    nav a { padding: .5rem .8rem; border-radius: 999px; font-weight: 700; color: var(--text-dim); }
+    nav a:hover, nav a.active { color: var(--text); background: color-mix(in oklab, var(--text) 10%, transparent); }
+    .menu-toggle { display:none; }
+    @media (max-width: 860px) {
+      nav ul { display:none; }
+      .menu-toggle { display:inline-flex; }
+      .mobile { display:none; position: fixed; inset: 60px 0 0; background: color-mix(in oklab, var(--bg) 92%, transparent); padding: 1rem; border-top: 1px solid color-mix(in oklab, var(--text) 10%, transparent); }
+      .mobile.open { display:block; }
+      .mobile a { display:block; padding: .95rem 1rem; border-radius: 12px; color: var(--text); font-weight:700; }
+      .mobile a:hover { background: color-mix(in oklab, var(--text) 10%, transparent); }
+    }
+
+    /* Hero */
+    .hero { padding: 6rem 0 4rem; position: relative; overflow: clip; }
+    .hero .bg { position:absolute; inset:0; background: url('https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1800&auto=format&fit=crop') center/cover no-repeat; filter: brightness(.65) saturate(1.1); }
+    .hero .overlay { position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.25)); }
+    .hero .inner { position:relative; text-align:center; }
+    .eyebrow { display:inline-block; padding:.3rem .7rem; border-radius:999px; background: color-mix(in oklab, var(--brand) 25%, transparent); font-weight:800; letter-spacing:.3px; }
+    .hero h1 { font-size: clamp(2rem, 3.8vw + 1rem, 4.2rem); line-height: 1.05; margin: .8rem 0 1rem; letter-spacing: -0.02em; }
+    .hero p { margin: 0 auto 2rem; max-width: 70ch; color: #e1f3ec; font-size: clamp(1rem, 1.2vw + .7rem, 1.25rem); }
+    .cta { display:flex; gap:.9rem; justify-content:center; flex-wrap:wrap; }
+    .hero .stats { margin-top: 2.2rem; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .stat { background: color-mix(in oklab, var(--surface) 70%, rgba(255,255,255,.02)); padding: 1rem 1.2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid color-mix(in oklab, var(--text) 7%, transparent); }
+    .stat b { font-size: 1.7rem; }
+    @media (max-width: 700px){ .hero .stats { grid-template-columns: 1fr; } }
+
+    /* Sections */
+    section { padding: 4rem 0; }
+    .section-title { font-size: clamp(1.6rem, 1.5vw + 1rem, 2.3rem); margin: 0 0 1.2rem; }
+    .muted { color: var(--text-dim); }
+
+    /* Sources */
+    .grid-3 { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1.1rem; }
+    .grid-2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1.1rem; }
+    .card { background: var(--surface); padding: 1.2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid color-mix(in oklab, var(--text) 8%, transparent); }
+    .card h3 { margin:.4rem 0 .3rem; }
+    .chip { display:inline-flex; align-items:center; gap:.4rem; padding:.28rem .6rem; border-radius:999px; background: color-mix(in oklab, var(--brand) 20%, transparent); font-size:.8rem; font-weight:800; letter-spacing:.2px; }
+    .icon { width: 20px; height: 20px; vertical-align: middle; }
+
+    /* Pros & Cons */
+    .proscons { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .good { border-left: 4px solid var(--accent); }
+    .bad { border-left: 4px solid var(--danger); }
+    .list { list-style: none; padding: 0; margin: .6rem 0 0; }
+    .list li { margin:.45rem 0; display:flex; gap:.5rem; align-items:flex-start; }
+
+    /* Charts */
+    .charts { display:grid; grid-template-columns: 2fr 1fr; gap: 1rem; align-items: stretch; }
+    canvas { width:100%; height: 360px; background: color-mix(in oklab, var(--surface) 90%, transparent); border-radius: 16px; border: 1px solid color-mix(in oklab, var(--text) 10%, transparent); box-shadow: var(--shadow); }
+    @media (max-width: 980px){ .charts { grid-template-columns:1fr; } }
+
+    /* Gallery */
+    .gallery { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .gallery img { width:100%; height: 100%; object-fit: cover; border-radius: 16px; border: 1px solid color-mix(in oklab, var(--text) 10%, transparent); box-shadow: var(--shadow); }
+    @media (max-width: 900px){ .grid-3 { grid-template-columns:1fr; } .grid-2 { grid-template-columns:1fr; } .gallery { grid-template-columns:1fr 1fr; } }
+    @media (max-width: 560px){ .gallery { grid-template-columns:1fr; } }
+
+    /* FAQ */
+    details { background: var(--surface); border-radius: 14px; padding: 1rem 1.1rem; border:1px solid color-mix(in oklab, var(--text) 10%, transparent); box-shadow: var(--shadow); }
+    details + details { margin-top: .7rem; }
+    summary { cursor: pointer; font-weight: 700; }
+
+    /* Contact */
+    form { display:grid; gap:.8rem; }
+    input, textarea { width:100%; padding: .95rem 1rem; border-radius: 12px; border: 1px solid color-mix(in oklab, var(--text) 12%, transparent); background: color-mix(in oklab, var(--surface) 90%, var(--bg)); color: var(--text); }
+    textarea { min-height: 120px; resize: vertical; }
+
+    /* Footer */
+    footer { padding: 2.2rem 0; border-top: 1px solid color-mix(in oklab, var(--text) 10%, transparent); color: var(--text-dim); }
+    .footer-grid { display:grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
+    .socials { display:flex; gap:.5rem; }
+    .socials a { display:grid; place-items:center; width:38px; height:38px; border-radius: 9px; border:1px solid color-mix(in oklab, var(--text) 12%, transparent); background: color-mix(in oklab, var(--surface) 60%, transparent); }
+    @media (max-width: 860px){ .footer-grid { grid-template-columns:1fr; } }
+    .right { text-align:right; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">⚡</div>
+        <a href="#top" aria-label="Home"><span>GreenFuture</span></a>
+      </div>
+      <nav aria-label="Primary">
+        <button class="btn alt menu-toggle" aria-controls="mobile" aria-expanded="false" id="menuBtn">Menu ▾</button>
+        <ul>
+          <li><a class="active" href="#home">Home</a></li>
+          <li><a href="#sources">Sources</a></li>
+          <li><a href="#proscons">Pros & Cons</a></li>
+          <li><a href="#stats">Stats</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#involved">Get Involved</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="mobile" id="mobile" role="dialog" aria-modal="true" aria-label="Mobile Menu">
+      <div class="container">
+        <a href="#home" onclick="closeMenu()">Home</a>
+        <a href="#sources" onclick="closeMenu()">Sources</a>
+        <a href="#proscons" onclick="closeMenu()">Pros & Cons</a>
+        <a href="#stats" onclick="closeMenu()">Stats</a>
+        <a href="#gallery" onclick="closeMenu()">Gallery</a>
+        <a href="#involved" onclick="closeMenu()">Get Involved</a>
+        <div class="spacer"></div>
+        <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+      <div class="container inner">
+        <span class="eyebrow">Renewable Energy 101</span>
+        <h1>Clean power for a brighter, sustainable future.</h1>
+        <p>Discover how solar, wind, hydro and more can power communities, cut emissions, and build energy independence — along with the trade‑offs to consider.</p>
+        <div class="cta">
+          <a class="btn" href="#sources">Explore Sources</a>
+          <a class="btn alt" href="#proscons">See Pros & Cons</a>
+          <button class="btn alt" onclick="toggleTheme()" title="Toggle light/dark">🌓 Theme</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="muted">Global electricity from renewables</span><br><b class="counter" data-target="30">0</b><span>% (demo)</span></div>
+          <div class="stat"><span class="muted">Average CO₂ per kWh vs coal</span><br><b class="counter" data-target="-80">0</b><span>% (demo)</span></div>
+          <div class="stat"><span class="muted">Jobs in clean energy (millions)</span><br><b class="counter" data-target="13">0</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources" class="container">
+      <h2 class="section-title">Major Renewable Sources</h2>
+      <p class="muted">The cleanest mix often blends multiple technologies suited to local geography and demand.</p>
+      <div class="grid-3">
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6 6 .9-4.5 4.3L18 20l-6-3-6 3 1.5-6.8L3 8.9 9 8z"/></svg> Solar</span>
+          <h3>Solar Photovoltaic</h3>
+          <p>Panels convert sunlight into electricity. Costs have fallen dramatically, making rooftops and solar farms common.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 9.27l3.8-3.8 1.4 1.42-5.2 5.2-3.2-3.2 1.42-1.41 1.78 1.79z"/></svg> Wind</span>
+          <h3>Onshore & Offshore Wind</h3>
+          <p>Turbines harvest kinetic energy of wind. Offshore sites often deliver stronger, steadier output.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 18h16v2H4zM4 4h2v10H4zm14 0h2v10h-2zM8 6h8v6H8z"/></svg> Hydro</span>
+          <h3>Hydropower</h3>
+          <p>Flowing water turns turbines. From large dams to small run‑of‑river systems, it provides flexible, low‑carbon power.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 5v6h4v2h-6V7h2z"/></svg> Geothermal</span>
+          <h3>Geothermal</h3>
+          <p>Uses earth’s heat for electricity and district heating. Highly reliable baseload where resources exist.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2 4 4 .6-3 3 .7 4.4-3.7-2-3.7 2 .7-4.4-3-3L10 7z"/></svg> Biomass</span>
+          <h3>Biomass</h3>
+          <p>Organic material (waste, residues) burned or digested for energy. Must be managed to ensure real emissions benefits.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 12h20M12 2v20"/></svg> Storage</span>
+          <h3>Energy Storage</h3>
+          <p>Batteries and pumped hydro store surplus energy to balance variable solar and wind.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="proscons" class="container">
+      <h2 class="section-title">Advantages & Disadvantages</h2>
+      <div class="proscons">
+        <div class="card good">
+          <h3>Advantages</h3>
+          <ul class="list">
+            <li>✅ Very low lifecycle emissions compared to fossil fuels.</li>
+            <li>✅ Reduces air pollution and health impacts.</li>
+            <li>✅ Energy independence & price stability (no fuel volatility).</li>
+            <li>✅ Rapidly falling costs (especially solar & wind).</li>
+            <li>✅ Scalable from rooftop to utility scale.</li>
+          </ul>
+        </div>
+        <div class="card bad">
+          <h3>Disadvantages</h3>
+          <ul class="list">
+            <li>⚠ Variable output (depends on sun/wind) without storage.</li>
+            <li>⚠ Land use & siting conflicts; visual/noise concerns.</li>
+            <li>⚠ Up‑front capital costs; financing needed.</nli>
+            <li>⚠ Grid integration and transmission upgrades required.</li>
+            <li>⚠ Some technologies have material supply chain impacts.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="stats" class="container">
+      <h2 class="section-title">Trends & Mix (Demo Data)</h2>
+      <p class="muted">Charts below use illustrative values so the page works offline. You can replace them with real figures later.</p>
+      <div class="charts">
+        <div>
+          <h3>Global Electricity by Source (2024 demo)</h3>
+          <canvas id="barChart" aria-label="Bar chart of electricity mix" role="img"></canvas>
+        </div>
+        <div>
+          <h3>Renewables Breakdown</h3>
+          <canvas id="pieChart" aria-label="Pie chart of renewables breakdown" role="img"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="container">
+      <h2 class="section-title">Project Gallery</h2>
+      <div class="gallery">
+        <img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop" alt="Wind farm at sunset" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1505483531331-407c9267f9a8?q=80&w=1200&auto=format&fit=crop" alt="Solar panels field" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200&auto=format&fit=crop" alt="Hydro dam" loading="lazy">
+      </div>
+    </section>
+
+    <section class="container" id="faq">
+      <h2 class="section-title">FAQ</h2>
+      <details>
+        <summary>Are renewables enough to power a whole country?</summary>
+        <p>Many countries already get large shares from renewables. The rest requires storage, flexible demand, and transmission to balance variability.</p>
+      </details>
+      <details>
+        <summary>Is nuclear energy renewable?</summary>
+        <p>Nuclear is low‑carbon but not classified as renewable. Some countries use it alongside renewables to decarbonize faster.</p>
+      </details>
+    </section>
+
+    <section id="involved" class="container">
+      <h2 class="section-title">Get Involved</h2>
+      <p class="muted">Curious about projects, careers, or local policy? Send a note. This demo form shows how submissions would work.</p>
+      <form onsubmit="event.preventDefault(); fakeSubmit(this)">
+        <div class="grid-2">
+          <input name="name" placeholder="Your name" required>
+          <input name="email" type="email" placeholder="Email address" required>
+        </div>
+        <input name="subject" placeholder="Topic (e.g., rooftop solar)">
+        <textarea name="message" placeholder="Message" required></textarea>
+        <div class="right">
+          <button class="btn" type="submit">Send message</button>
+        </div>
+        <p id="formStatus" class="muted" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand"><div class="logo" aria-hidden="true">⚡</div><span>GreenFuture</span></div>
+        <p class="muted">© <span id="year"></span> GreenFuture Energy. All rights reserved.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <nav aria-label="Footer">
+          <a href="#sources">Sources</a><br>
+          <a href="#proscons">Pros & Cons</a><br>
+          <a href="#stats">Stats</a><br>
+          <a href="#involved">Get Involved</a>
+        </nav>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <div class="socials">
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="GitHub">{ }</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobile = document.getElementById('mobile');
+    function closeMenu(){ mobile.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); }
+    menuBtn?.addEventListener('click', () => {
+      const open = mobile.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    // Theme toggle (persisted)
+    const THEME_KEY = 'pref-theme';
+    function applyTheme(t){ document.documentElement.style.colorScheme = t; localStorage.setItem(THEME_KEY, t); }
+    function toggleTheme(){
+      const cur = localStorage.getItem(THEME_KEY) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    const saved = localStorage.getItem(THEME_KEY); if(saved){ applyTheme(saved); }
+
+    // Fake form submit demo
+    function fakeSubmit(form){
+      const status = document.getElementById('formStatus');
+      status.textContent = 'Sending…';
+      setTimeout(() => { status.textContent = 'Thanks! Your message was queued (demo).'; form.reset(); }, 900);
+    }
+
+    // Animated counters
+    const counters = document.querySelectorAll('.counter');
+    const appear = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const el = e.target; const target = Number(el.dataset.target);
+          const start = performance.now();
+          const dur = 1200;
+          function step(ts){
+            const p = Math.min(1, (ts - start)/dur);
+            const val = Math.round(p * target);
+            el.textContent = val;
+            if(p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+          appear.unobserve(el);
+        }
+      });
+    }, { threshold: 0.6 });
+    counters.forEach(c=>appear.observe(c));
+
+    // Simple charts (no external libraries)
+    const bar = document.getElementById('barChart');
+    const pie = document.getElementById('pieChart');
+
+    function drawBarChart(ctx, labels, values){
+      const dpr = devicePixelRatio || 1;
+      const rect = ctx.canvas.getBoundingClientRect();
+      ctx.canvas.width = rect.width * dpr; ctx.canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
+      const w = rect.width, h = rect.height, pad = 40; ctx.clearRect(0,0,w,h);
+      // axes
+      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(150,150,150,.4)';
+      ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, h - pad); ctx.lineTo(w - pad, h - pad); ctx.stroke();
+      const max = Math.max(...values) * 1.15;
+      const bw = (w - pad*2) / values.length * 0.7; // bar width
+      values.forEach((v,i)=>{
+        const x = pad + (i + 0.15) * ((w - pad*2) / values.length);
+        const y = h - pad;
+        const bh = (v / max) * (h - pad*2);
+        // gradient bar
+        const grad = ctx.createLinearGradient(0, y - bh, 0, y);
+        grad.addColorStop(0, 'rgba(20,184,166,0.9)'); // brand
+        grad.addColorStop(1, 'rgba(56,189,248,0.9)'); // brand-2
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y - bh, bw, bh);
+        // label
+        ctx.fillStyle = 'rgba(180,200,195,.9)';
+        ctx.font = '12px system-ui';
+        ctx.fillText(labels[i], x, y + 16);
+      });
+    }
+
+    function drawPieChart(ctx, labels, values){
+      const dpr = devicePixelRatio || 1;
+      const rect = ctx.canvas.getBoundingClientRect();
+      ctx.canvas.width = rect.width * dpr; ctx.canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
+      const w = rect.width, h = rect.height; ctx.clearRect(0,0,w,h);
+      const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 18;
+      const total = values.reduce((a,b)=>a+b,0);
+      let start = -Math.PI/2;
+      values.forEach((v,i)=>{
+        const frac = v/total; const end = start + frac*2*Math.PI;
+        const grad = ctx.createLinearGradient(cx, cy-r, cx, cy+r);
+        const hues = [160, 190, 120, 200, 90, 220];
+        const hue = hues[i % hues.length];
+        grad.addColorStop(0, `hsl(${hue} 70% 50%)`);
+        grad.addColorStop(1, `hsl(${hue} 80% 40%)`);
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+        start = end;
+      });
+      // legend
+      ctx.fillStyle = 'rgba(180,200,195,.95)';
+      ctx.font = '12px system-ui';
+      let y = 16;
+      labels.forEach((l,i)=>{ ctx.fillText(`${l} – ${values[i]}%`, 10, y); y += 16; });
+    }
+
+    // Demo data (replace with real stats later)
+    const mixLabels = ['Coal','Gas','Nuclear','Hydro','Wind','Solar','Other'];
+    const mixValues = [31, 22, 9, 16, 12, 8, 2];
+    const renLabels = ['Hydro','Wind','Solar','Biomass','Geothermal'];
+    const renValues = [45, 28, 20, 5, 2];
+
+    // Draw on load & on resize
+    function renderCharts(){
+      const bctx = bar.getContext('2d');
+      const pctx = pie.getContext('2d');
+      drawBarChart(bctx, mixLabels, mixValues);
+      drawPieChart(pctx, renLabels, renValues);
+    }
+    renderCharts();
+    addEventListener('resize', ()=>{ clearTimeout(window.__r); window.__r = setTimeout(renderCharts, 200); });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreenFuture Energy — Learn Renewable Energy</title>
+  <meta name="description" content="A modern, mobile‑first website explaining renewable energy sources, with interactive charts and clear pros & cons." />
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%2309B27E'/%3E%3Cpath d='M50 14l8 16 18 3-13 12 3 18-16-8-16 8 3-18-13-12 18-3z' fill='white'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      /* Core palette */
+      --bg: #0a0f0d;           /* deep green/black */
+      --surface: #0f1613;      /* card background */
+      --text: #edf7f3;         /* primary text */
+      --text-dim: #a5b8b0;     /* secondary text */
+      --brand: #14b8a6;        /* teal/green */
+      --brand-2: #38bdf8;      /* sky blue */
+      --accent: #84cc16;       /* lime */
+      --warn: #f59e0b;         /* amber */
+      --danger: #ef4444;       /* red */
+      --shadow: 0 12px 40px rgba(0,0,0,.28);
+      --radius: 18px;
+      --maxw: 1200px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6fbf8;
+        --surface: #ffffff;
+        --text: #0f1720;
+        --text-dim: #516163;
+        --brand: #0e9f6e;
+        --brand-2: #0ea5e9;
+        --accent: #65a30d;
+        --shadow: 0 12px 40px rgba(2,6,23,.08);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 110% -10%, color-mix(in oklab, var(--brand-2) 18%, transparent), transparent),
+        radial-gradient(1000px 700px at -10% 110%, color-mix(in oklab, var(--brand) 18%, transparent), transparent),
+        var(--bg);
+      scroll-behavior: smooth;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(100% - 2rem, var(--maxw)); margin-inline: auto; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: .9rem 1.2rem; border-radius: 999px;
+      border: 1px solid color-mix(in oklab, var(--brand) 30%, transparent);
+      background: linear-gradient(180deg, color-mix(in oklab, var(--brand) 15%, transparent), transparent);
+      color: var(--text); font-weight: 700; letter-spacing:.2px; box-shadow: var(--shadow);
+      transition: transform .15s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: var(--brand); }
+    .btn.alt { background: transparent; border-color: color-mix(in oklab, var(--text) 20%, transparent); box-shadow: none; }
+
+    /* Header */
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px); background: color-mix(in oklab, var(--bg) 70%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--text) 10%, transparent); }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: .85rem 0; }
+    .brand { display:flex; align-items:center; gap:.6rem; font-weight:900; letter-spacing:.2px; }
+    .brand .logo { width: 36px; height: 36px; border-radius: 10px; display:grid; place-items:center; background: linear-gradient(135deg, var(--brand), var(--accent)); color:white; font-weight:900; box-shadow: var(--shadow); }
+    nav ul { display: flex; gap: 1rem; list-style: none; padding: 0; margin: 0; }
+    nav a { padding: .5rem .8rem; border-radius: 999px; font-weight: 700; color: var(--text-dim); }
+    nav a:hover, nav a.active { color: var(--text); background: color-mix(in oklab, var(--text) 10%, transparent); }
+    .menu-toggle { display:none; }
+    @media (max-width: 860px) {
+      nav ul { display:none; }
+      .menu-toggle { display:inline-flex; }
+      .mobile { display:none; position: fixed; inset: 60px 0 0; background: color-mix(in oklab, var(--bg) 92%, transparent); padding: 1rem; border-top: 1px solid color-mix(in oklab, var(--text) 10%, transparent); }
+      .mobile.open { display:block; }
+      .mobile a { display:block; padding: .95rem 1rem; border-radius: 12px; color: var(--text); font-weight:700; }
+      .mobile a:hover { background: color-mix(in oklab, var(--text) 10%, transparent); }
+    }
+
+    /* Hero */
+    .hero { padding: 6rem 0 4rem; position: relative; overflow: clip; }
+    .hero .bg { position:absolute; inset:0; background: url('https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1800&auto=format&fit=crop') center/cover no-repeat; filter: brightness(.65) saturate(1.1); }
+    .hero .overlay { position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.25)); }
+    .hero .inner { position:relative; text-align:center; }
+    .eyebrow { display:inline-block; padding:.3rem .7rem; border-radius:999px; background: color-mix(in oklab, var(--brand) 25%, transparent); font-weight:800; letter-spacing:.3px; }
+    .hero h1 { font-size: clamp(2rem, 3.8vw + 1rem, 4.2rem); line-height: 1.05; margin: .8rem 0 1rem; letter-spacing: -0.02em; }
+    .hero p { margin: 0 auto 2rem; max-width: 70ch; color: #e1f3ec; font-size: clamp(1rem, 1.2vw + .7rem, 1.25rem); }
+    .cta { display:flex; gap:.9rem; justify-content:center; flex-wrap:wrap; }
+    .hero .stats { margin-top: 2.2rem; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .stat { background: color-mix(in oklab, var(--surface) 70%, rgba(255,255,255,.02)); padding: 1rem 1.2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid color-mix(in oklab, var(--text) 7%, transparent); }
+    .stat b { font-size: 1.7rem; }
+    @media (max-width: 700px){ .hero .stats { grid-template-columns: 1fr; } }
+
+    /* Sections */
+    section { padding: 4rem 0; }
+    .section-title { font-size: clamp(1.6rem, 1.5vw + 1rem, 2.3rem); margin: 0 0 1.2rem; }
+    .muted { color: var(--text-dim); }
+
+    /* Sources */
+    .grid-3 { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1.1rem; }
+    .grid-2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1.1rem; }
+    .card { background: var(--surface); padding: 1.2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid color-mix(in oklab, var(--text) 8%, transparent); }
+    .card h3 { margin:.4rem 0 .3rem; }
+    .chip { display:inline-flex; align-items:center; gap:.4rem; padding:.28rem .6rem; border-radius:999px; background: color-mix(in oklab, var(--brand) 20%, transparent); font-size:.8rem; font-weight:800; letter-spacing:.2px; }
+    .icon { width: 20px; height: 20px; vertical-align: middle; }
+
+    /* Pros & Cons */
+    .proscons { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .good { border-left: 4px solid var(--accent); }
+    .bad { border-left: 4px solid var(--danger); }
+    .list { list-style: none; padding: 0; margin: .6rem 0 0; }
+    .list li { margin:.45rem 0; display:flex; gap:.5rem; align-items:flex-start; }
+
+    /* Charts */
+    .charts { display:grid; grid-template-columns: 2fr 1fr; gap: 1rem; align-items: stretch; }
+    canvas { width:100%; height: 360px; background: color-mix(in oklab, var(--surface) 90%, transparent); border-radius: 16px; border: 1px solid color-mix(in oklab, var(--text) 10%, transparent); box-shadow: var(--shadow); }
+    @media (max-width: 980px){ .charts { grid-template-columns:1fr; } }
+
+    /* Gallery */
+    .gallery { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .gallery img { width:100%; height: 100%; object-fit: cover; border-radius: 16px; border: 1px solid color-mix(in oklab, var(--text) 10%, transparent); box-shadow: var(--shadow); }
+    @media (max-width: 900px){ .grid-3 { grid-template-columns:1fr; } .grid-2 { grid-template-columns:1fr; } .gallery { grid-template-columns:1fr 1fr; } }
+    @media (max-width: 560px){ .gallery { grid-template-columns:1fr; } }
+
+    /* FAQ */
+    details { background: var(--surface); border-radius: 14px; padding: 1rem 1.1rem; border:1px solid color-mix(in oklab, var(--text) 10%, transparent); box-shadow: var(--shadow); }
+    details + details { margin-top: .7rem; }
+    summary { cursor: pointer; font-weight: 700; }
+
+    /* Contact */
+    form { display:grid; gap:.8rem; }
+    input, textarea { width:100%; padding: .95rem 1rem; border-radius: 12px; border: 1px solid color-mix(in oklab, var(--text) 12%, transparent); background: color-mix(in oklab, var(--surface) 90%, var(--bg)); color: var(--text); }
+    textarea { min-height: 120px; resize: vertical; }
+
+    /* Footer */
+    footer { padding: 2.2rem 0; border-top: 1px solid color-mix(in oklab, var(--text) 10%, transparent); color: var(--text-dim); }
+    .footer-grid { display:grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
+    .socials { display:flex; gap:.5rem; }
+    .socials a { display:grid; place-items:center; width:38px; height:38px; border-radius: 9px; border:1px solid color-mix(in oklab, var(--text) 12%, transparent); background: color-mix(in oklab, var(--surface) 60%, transparent); }
+    @media (max-width: 860px){ .footer-grid { grid-template-columns:1fr; } }
+    .right { text-align:right; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">⚡</div>
+        <a href="#top" aria-label="Home"><span>GreenFuture</span></a>
+      </div>
+      <nav aria-label="Primary">
+        <button class="btn alt menu-toggle" aria-controls="mobile" aria-expanded="false" id="menuBtn">Menu ▾</button>
+        <ul>
+          <li><a class="active" href="#home">Home</a></li>
+          <li><a href="#sources">Sources</a></li>
+          <li><a href="#proscons">Pros & Cons</a></li>
+          <li><a href="#stats">Stats</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#involved">Get Involved</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="mobile" id="mobile" role="dialog" aria-modal="true" aria-label="Mobile Menu">
+      <div class="container">
+        <a href="#home" onclick="closeMenu()">Home</a>
+        <a href="#sources" onclick="closeMenu()">Sources</a>
+        <a href="#proscons" onclick="closeMenu()">Pros & Cons</a>
+        <a href="#stats" onclick="closeMenu()">Stats</a>
+        <a href="#gallery" onclick="closeMenu()">Gallery</a>
+        <a href="#involved" onclick="closeMenu()">Get Involved</a>
+        <div class="spacer"></div>
+        <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+      <div class="container inner">
+        <span class="eyebrow">Renewable Energy 101</span>
+        <h1>Clean power for a brighter, sustainable future.</h1>
+        <p>Discover how solar, wind, hydro and more can power communities, cut emissions, and build energy independence — along with the trade‑offs to consider.</p>
+        <div class="cta">
+          <a class="btn" href="#sources">Explore Sources</a>
+          <a class="btn alt" href="#proscons">See Pros & Cons</a>
+          <button class="btn alt" onclick="toggleTheme()" title="Toggle light/dark">🌓 Theme</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="muted">Global electricity from renewables</span><br><b class="counter" data-target="30">0</b><span>% (demo)</span></div>
+          <div class="stat"><span class="muted">Average CO₂ per kWh vs coal</span><br><b class="counter" data-target="-80">0</b><span>% (demo)</span></div>
+          <div class="stat"><span class="muted">Jobs in clean energy (millions)</span><br><b class="counter" data-target="13">0</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources" class="container">
+      <h2 class="section-title">Major Renewable Sources</h2>
+      <p class="muted">The cleanest mix often blends multiple technologies suited to local geography and demand.</p>
+      <div class="grid-3">
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6 6 .9-4.5 4.3L18 20l-6-3-6 3 1.5-6.8L3 8.9 9 8z"/></svg> Solar</span>
+          <h3>Solar Photovoltaic</h3>
+          <p>Panels convert sunlight into electricity. Costs have fallen dramatically, making rooftops and solar farms common.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 9.27l3.8-3.8 1.4 1.42-5.2 5.2-3.2-3.2 1.42-1.41 1.78 1.79z"/></svg> Wind</span>
+          <h3>Onshore & Offshore Wind</h3>
+          <p>Turbines harvest kinetic energy of wind. Offshore sites often deliver stronger, steadier output.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 18h16v2H4zM4 4h2v10H4zm14 0h2v10h-2zM8 6h8v6H8z"/></svg> Hydro</span>
+          <h3>Hydropower</h3>
+          <p>Flowing water turns turbines. From large dams to small run‑of‑river systems, it provides flexible, low‑carbon power.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 5v6h4v2h-6V7h2z"/></svg> Geothermal</span>
+          <h3>Geothermal</h3>
+          <p>Uses earth’s heat for electricity and district heating. Highly reliable baseload where resources exist.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2 4 4 .6-3 3 .7 4.4-3.7-2-3.7 2 .7-4.4-3-3L10 7z"/></svg> Biomass</span>
+          <h3>Biomass</h3>
+          <p>Organic material (waste, residues) burned or digested for energy. Must be managed to ensure real emissions benefits.</p>
+        </div>
+        <div class="card">
+          <span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 12h20M12 2v20"/></svg> Storage</span>
+          <h3>Energy Storage</h3>
+          <p>Batteries and pumped hydro store surplus energy to balance variable solar and wind.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="proscons" class="container">
+      <h2 class="section-title">Advantages & Disadvantages</h2>
+      <div class="proscons">
+        <div class="card good">
+          <h3>Advantages</h3>
+          <ul class="list">
+            <li>✅ Very low lifecycle emissions compared to fossil fuels.</li>
+            <li>✅ Reduces air pollution and health impacts.</li>
+            <li>✅ Energy independence & price stability (no fuel volatility).</li>
+            <li>✅ Rapidly falling costs (especially solar & wind).</li>
+            <li>✅ Scalable from rooftop to utility scale.</li>
+          </ul>
+        </div>
+        <div class="card bad">
+          <h3>Disadvantages</h3>
+          <ul class="list">
+            <li>⚠ Variable output (depends on sun/wind) without storage.</li>
+            <li>⚠ Land use & siting conflicts; visual/noise concerns.</li>
+            <li>⚠ Up‑front capital costs; financing needed.</nli>
+            <li>⚠ Grid integration and transmission upgrades required.</li>
+            <li>⚠ Some technologies have material supply chain impacts.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="stats" class="container">
+      <h2 class="section-title">Trends & Mix (Demo Data)</h2>
+      <p class="muted">Charts below use illustrative values so the page works offline. You can replace them with real figures later.</p>
+      <div class="charts">
+        <div>
+          <h3>Global Electricity by Source (2024 demo)</h3>
+          <canvas id="barChart" aria-label="Bar chart of electricity mix" role="img"></canvas>
+        </div>
+        <div>
+          <h3>Renewables Breakdown</h3>
+          <canvas id="pieChart" aria-label="Pie chart of renewables breakdown" role="img"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="container">
+      <h2 class="section-title">Project Gallery</h2>
+      <div class="gallery">
+        <img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop" alt="Wind farm at sunset" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1505483531331-407c9267f9a8?q=80&w=1200&auto=format&fit=crop" alt="Solar panels field" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200&auto=format&fit=crop" alt="Hydro dam" loading="lazy">
+      </div>
+    </section>
+
+    <section class="container" id="faq">
+      <h2 class="section-title">FAQ</h2>
+      <details>
+        <summary>Are renewables enough to power a whole country?</summary>
+        <p>Many countries already get large shares from renewables. The rest requires storage, flexible demand, and transmission to balance variability.</p>
+      </details>
+      <details>
+        <summary>Is nuclear energy renewable?</summary>
+        <p>Nuclear is low‑carbon but not classified as renewable. Some countries use it alongside renewables to decarbonize faster.</p>
+      </details>
+    </section>
+
+    <section id="involved" class="container">
+      <h2 class="section-title">Get Involved</h2>
+      <p class="muted">Curious about projects, careers, or local policy? Send a note. This demo form shows how submissions would work.</p>
+      <form onsubmit="event.preventDefault(); fakeSubmit(this)">
+        <div class="grid-2">
+          <input name="name" placeholder="Your name" required>
+          <input name="email" type="email" placeholder="Email address" required>
+        </div>
+        <input name="subject" placeholder="Topic (e.g., rooftop solar)">
+        <textarea name="message" placeholder="Message" required></textarea>
+        <div class="right">
+          <button class="btn" type="submit">Send message</button>
+        </div>
+        <p id="formStatus" class="muted" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand"><div class="logo" aria-hidden="true">⚡</div><span>GreenFuture</span></div>
+        <p class="muted">© <span id="year"></span> GreenFuture Energy. All rights reserved.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <nav aria-label="Footer">
+          <a href="#sources">Sources</a><br>
+          <a href="#proscons">Pros & Cons</a><br>
+          <a href="#stats">Stats</a><br>
+          <a href="#involved">Get Involved</a>
+        </nav>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <div class="socials">
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="GitHub">{ }</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobile = document.getElementById('mobile');
+    function closeMenu(){ mobile.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); }
+    menuBtn?.addEventListener('click', () => {
+      const open = mobile.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    // Theme toggle (persisted)
+    const THEME_KEY = 'pref-theme';
+    function applyTheme(t){ document.documentElement.style.colorScheme = t; localStorage.setItem(THEME_KEY, t); }
+    function toggleTheme(){
+      const cur = localStorage.getItem(THEME_KEY) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    const saved = localStorage.getItem(THEME_KEY); if(saved){ applyTheme(saved); }
+
+    // Fake form submit demo
+    function fakeSubmit(form){
+      const status = document.getElementById('formStatus');
+      status.textContent = 'Sending…';
+      setTimeout(() => { status.textContent = 'Thanks! Your message was queued (demo).'; form.reset(); }, 900);
+    }
+
+    // Animated counters
+    const counters = document.querySelectorAll('.counter');
+    const appear = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const el = e.target; const target = Number(el.dataset.target);
+          const start = performance.now();
+          const dur = 1200;
+          function step(ts){
+            const p = Math.min(1, (ts - start)/dur);
+            const val = Math.round(p * target);
+            el.textContent = val;
+            if(p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+          appear.unobserve(el);
+        }
+      });
+    }, { threshold: 0.6 });
+    counters.forEach(c=>appear.observe(c));
+
+    // Simple charts (no external libraries)
+    const bar = document.getElementById('barChart');
+    const pie = document.getElementById('pieChart');
+
+    function drawBarChart(ctx, labels, values){
+      const dpr = devicePixelRatio || 1;
+      const rect = ctx.canvas.getBoundingClientRect();
+      ctx.canvas.width = rect.width * dpr; ctx.canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
+      const w = rect.width, h = rect.height, pad = 40; ctx.clearRect(0,0,w,h);
+      // axes
+      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(150,150,150,.4)';
+      ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, h - pad); ctx.lineTo(w - pad, h - pad); ctx.stroke();
+      const max = Math.max(...values) * 1.15;
+      const bw = (w - pad*2) / values.length * 0.7; // bar width
+      values.forEach((v,i)=>{
+        const x = pad + (i + 0.15) * ((w - pad*2) / values.length);
+        const y = h - pad;
+        const bh = (v / max) * (h - pad*2);
+        // gradient bar
+        const grad = ctx.createLinearGradient(0, y - bh, 0, y);
+        grad.addColorStop(0, 'rgba(20,184,166,0.9)'); // brand
+        grad.addColorStop(1, 'rgba(56,189,248,0.9)'); // brand-2
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y - bh, bw, bh);
+        // label
+        ctx.fillStyle = 'rgba(180,200,195,.9)';
+        ctx.font = '12px system-ui';
+        ctx.fillText(labels[i], x, y + 16);
+      });
+    }
+
+    function drawPieChart(ctx, labels, values){
+      const dpr = devicePixelRatio || 1;
+      const rect = ctx.canvas.getBoundingClientRect();
+      ctx.canvas.width = rect.width * dpr; ctx.canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
+      const w = rect.width, h = rect.height; ctx.clearRect(0,0,w,h);
+      const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 18;
+      const total = values.reduce((a,b)=>a+b,0);
+      let start = -Math.PI/2;
+      values.forEach((v,i)=>{
+        const frac = v/total; const end = start + frac*2*Math.PI;
+        const grad = ctx.createLinearGradient(cx, cy-r, cx, cy+r);
+        const hues = [160, 190, 120, 200, 90, 220];
+        const hue = hues[i % hues.length];
+        grad.addColorStop(0, `hsl(${hue} 70% 50%)`);
+        grad.addColorStop(1, `hsl(${hue} 80% 40%)`);
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+        start = end;
+      });
+      // legend
+      ctx.fillStyle = 'rgba(180,200,195,.95)';
+      ctx.font = '12px system-ui';
+      let y = 16;
+      labels.forEach((l,i)=>{ ctx.fillText(`${l} – ${values[i]}%`, 10, y); y += 16; });
+    }
+
+    // Demo data (replace with real stats later)
+    const mixLabels = ['Coal','Gas','Nuclear','Hydro','Wind','Solar','Other'];
+    const mixValues = [31, 22, 9, 16, 12, 8, 2];
+    const renLabels = ['Hydro','Wind','Solar','Biomass','Geothermal'];
+    const renValues = [45, 28, 20, 5, 2];
+
+    // Draw on load & on resize
+    function renderCharts(){
+      const bctx = bar.getContext('2d');
+      const pctx = pie.getContext('2d');
+      drawBarChart(bctx, mixLabels, mixValues);
+      drawPieChart(pctx, renLabels, renValues);
+    }
+    renderCharts();
+    addEventListener('resize', ()=>{ clearTimeout(window.__r); window.__r = setTimeout(renderCharts, 200); });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
